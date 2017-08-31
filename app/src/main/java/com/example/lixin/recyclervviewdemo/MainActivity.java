@@ -7,9 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
+    //http://www.jianshu.com/p/4eff036360da
     private RecyclerView recyclerView;
     private MyAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         //listView的形式展示
         linearLayoutManager = new LinearLayoutManager(this);
+        //设置横向还是竖向
+//        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         //gridview的形式展示,可以通过setSpanSizeLookup 来自定义每个item占的列数
         gridLayoutManager = new GridLayoutManager(this,3);
 
@@ -35,10 +38,29 @@ public class MainActivity extends AppCompatActivity {
         //瀑布流的形式
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         //横向展示
-//        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new MyAdapter();
         recyclerView.setAdapter(adapter);
+       adapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
+           @Override
+           public void onItemClick(View v, int position) {
+               //增加和删除的话 不直接对postion做处理,因为此处的position是没有刷新以前的position
+                adapter.add(position);
+
+           }
+       });
+        adapter.setOnItemLongClickListener(new MyAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(View v, int position) {
+                //remove的操作
+//                adapter.remove(position);
+
+                //更新的操作
+                adapter.update(position,"这是我更新的内容");
+            }
+        });
+        recyclerView.addItemDecoration(new MyDecoration(this,LinearLayoutManager.VERTICAL));
     }
     public void onClick(View view){
         //切换布局
