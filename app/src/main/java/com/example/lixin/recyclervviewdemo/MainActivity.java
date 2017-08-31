@@ -74,8 +74,17 @@ public class MainActivity extends AppCompatActivity {
         //所以不能先判断是否是LinearLayoutManager (LinearLayoutManager范围大)
         if (layoutManager instanceof GridLayoutManager){
             recyclerView.setLayoutManager(linearLayoutManager);
+            //重新设置adapter之后，会重新走oncreateViewholder可以改变我们的布局
+            recyclerView.setAdapter(adapter);
         }else if (layoutManager instanceof LinearLayoutManager){
             recyclerView.setLayoutManager(gridLayoutManager);
+            recyclerView.setAdapter(adapter);
         }
+    }
+    public void onClick_all(View view){
+        adapter.selectedAll();
+    }
+    public void onClick_noall(View view){
+        adapter.revertSelected();
     }
 }
